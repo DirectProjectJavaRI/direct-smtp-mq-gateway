@@ -1,0 +1,13 @@
+---
+applications:
+- name: direct-smtp-mq-gateway
+  instances: 1
+  buildpack: java_buildpack
+  path: target/direct-smtp-mq-gateway-6.0-SNAPSHOT.jar
+  env: 
+    spring.cloud.config.label: master
+  services:
+    - directhisp-config-server
+    - directhisp-rabbit
+  routes:
+    - route: cf-tcpapps.io:3398 
