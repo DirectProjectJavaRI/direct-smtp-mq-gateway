@@ -2,8 +2,6 @@ package org.nhindirect.smtpmq.gateway.server;
 
 import java.io.InputStream;
 
-import org.apache.james.smtpserver.SizeLimitedInputStream;
-
 public class SizeLimitedInputStreamFactory
 {
     private static SizeLimitedInputStreamFactory instance = new SizeLimitedInputStreamFactory();

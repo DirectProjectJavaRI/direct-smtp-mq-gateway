@@ -15,7 +15,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.james.smtpserver.MessageSizeException;
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
 import org.slf4j.Logger;
