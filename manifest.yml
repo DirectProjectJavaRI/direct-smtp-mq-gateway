@@ -9,5 +9,3 @@ applications:
   services:
     - directhisp-config-server
     - directhisp-rabbit
-  routes:
-    - route: cf-tcpapps.io:3398 
