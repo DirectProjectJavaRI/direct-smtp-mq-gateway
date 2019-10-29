@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nhind</groupId>
 	<artifactId>direct-smtp-mq-gateway</artifactId>
-	<version>6.0</version>
+	<version>6.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</name>
     <description>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</description>	
