@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>The Direct Project: SMTP MQ Gateway</title>
+        <author>Greg Meyer</author>
+    </properties>
+    <head>
+       <title>The Direct Project: SMTP MQ Gateway</title>
+    </head>    
+    <body>
+        <section name="Overview">
+            <p>
+               The NHIN Direct SMTP MQ module consists is the inbound SMTP interface for the DirectProject Java RI
+               microservices architecture.  It accepts inbound messages and forwards them the security and trust agent module
+               via a Spring Cloud streams channel.  It support message size limits and the ability filter incoming messages by 
+               CIDR ranges.
+            </p>
+        </section>
+    </body>
+</document>
