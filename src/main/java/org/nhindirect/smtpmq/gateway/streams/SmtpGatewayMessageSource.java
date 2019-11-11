@@ -27,7 +27,9 @@ public class SmtpGatewayMessageSource
 	@Output(SmtpGatewayMessageOutput.SMTP_GATEWAY_MESSAGE_OUTPUT)
 	public <T> void forwardSMTPMessage(SMTPMailMessage msg) throws Exception
 	{
-		LOGGER.info("Handing off incoming message to smtp gateway for from {} to {} with message id {}", msg.getMailFrom().toString(), 
+		final String from = (msg.getMailFrom() == null) ? null : msg.getMailFrom().toString();
+		
+		LOGGER.info("Handing off incoming message to smtp gateway for from {} to {} with message id {}", from, 
 				toRecipsPrettingString(msg.getRecipientAddresses()), msg.getMimeMessage().getMessageID());
 		
 		this.smtpGatewayChannel.send(SMTPMailMessageConverter.toStreamMessage(msg));
