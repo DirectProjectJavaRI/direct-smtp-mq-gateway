@@ -17,17 +17,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
 import org.subethamail.smtp.TooMuchDataException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SMTPMessageHandler implements MessageHandler
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SMTPMessageHandler.class);	
-	
 	protected SmtpGatewayMessageSource messageSource;
 	protected GetMessageHeaderStream getMessageHeaderStream;
 	protected SizeLimitedStreamCreator sizeLimitedStreamCreator;
@@ -54,15 +53,15 @@ public class SMTPMessageHandler implements MessageHandler
 	{
 	    try 
 	    {
-	    	if (!StringUtils.isEmpty(from))
+	    	if (StringUtils.hasText(from))
 	    	{
 		        this.from = new InternetAddress(from);
 	    		
 		    	// handle "<>" scenario
-		        if (StringUtils.isEmpty(this.from.getAddress())) 
+		        if (!StringUtils.hasText(this.from.getAddress())) 
 		        {
 		        	this.from = null;
-		            LOGGER.info("blank address... mailFrom will be null");
+		            log.info("blank address... mailFrom will be null");
 		        }	
 		        
 	    	}
@@ -86,7 +85,7 @@ public class SMTPMessageHandler implements MessageHandler
 	    catch (AddressException e)
 	    {
 	        String errorMessage = "error parsing recipient address " + recipient;
-	        LOGGER.error(errorMessage, e);
+	        log.error(errorMessage, e);
 	        throw new RejectException(errorMessage);
 	    }
 		
@@ -131,7 +130,7 @@ public class SMTPMessageHandler implements MessageHandler
 				   * 552 - Requested mail action aborted: exceeded storage allocation
 		    	   */
 		    	  errorMessage +=  ": " + e.getCause().getMessage();
-		    	  LOGGER.error(errorMessage, e);
+		    	  log.error(errorMessage, e);
 		    	  throw new RejectException(552, errorMessage);
 		      }
 		      else
@@ -140,7 +139,7 @@ public class SMTPMessageHandler implements MessageHandler
 		    	   * RFC821:
 				   * Service not available, closing transmission channel [This may be a reply to any command if the service knows it must shut down]
 		    	   */
-		    	  LOGGER.error(errorMessage, e);
+		    	  log.error(errorMessage, e);
 		    	  throw new RejectException(421, errorMessage);
 		      }
 		    }		
@@ -152,7 +151,7 @@ public class SMTPMessageHandler implements MessageHandler
 		    	messageId = mimeMessage.getMessageID();
 		    	messageSource.forwardSMTPMessage(mailMessage);
 
-		        LOGGER.info("successfully sent message with message id {} ({} bytes)", messageId, countingInputStream.getByteCount());
+		        log.info("successfully sent message with message id {} ({} bytes)", messageId, countingInputStream.getByteCount());
 		    } 
 		    catch (Throwable e) 
 		    {
@@ -160,7 +159,7 @@ public class SMTPMessageHandler implements MessageHandler
 		    	 * RFC821:
 		         * Transaction failed
 		         */
-		        LOGGER.error("error sending message with message id " + messageId, e);
+		        log.error("error sending message with message id " + messageId, e);
 		        throw new RejectException(554, "Error sending message: " + e.getMessage());
 		    }
 	    }

@@ -1,27 +1,24 @@
 package org.nhindirect.smtpmq.gateway.boot;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-
-import static org.junit.Assert.assertFalse;
-
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.apache.commons.net.smtp.SMTPClient;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.subethamail.smtp.server.SMTPServer;
 
 
 @WebAppConfiguration 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {SmtpGatewayApplication.class}) 
 @Configuration
 @TestPropertySource("classpath:properties/testConfig.properties")
@@ -31,7 +28,7 @@ public class SMTPMessageHandler_maxSizeTest
 	@Autowired 
 	protected SMTPServer smtpServer;
 	
-	@Before
+	@BeforeEach
 	public void setUp()
 	{ 
 		if (!smtpServer.isRunning())

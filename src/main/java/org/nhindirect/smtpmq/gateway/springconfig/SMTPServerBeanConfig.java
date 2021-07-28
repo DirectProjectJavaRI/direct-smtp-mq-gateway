@@ -42,7 +42,7 @@ public class SMTPServerBeanConfig
 	private int maxMessageSize;			
 	
 	
-	@Value("#{'${direct.smtpmqgateway.clientwhitelist.cidr:}'.split(',')}")
+	@Value("${direct.smtpmqgateway.clientwhitelist.cidr:}")
 	private List<String> clientWhitelistCidrs;	
 	
 	@Autowired
@@ -65,7 +65,7 @@ public class SMTPServerBeanConfig
 			protected ServerSocket createServerSocket() throws IOException
 			{
 				if (clientWhitelistCidrs.isEmpty() || 
-						(clientWhitelistCidrs.size() == 1 && StringUtils.isEmpty(clientWhitelistCidrs.get(0))))
+						(clientWhitelistCidrs.size() == 1 && !StringUtils.hasText(clientWhitelistCidrs.get(0))))
 					return super.createServerSocket();
 				
 				InetSocketAddress isa;

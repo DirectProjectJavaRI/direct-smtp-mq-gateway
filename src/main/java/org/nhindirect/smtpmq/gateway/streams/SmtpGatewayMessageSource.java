@@ -6,33 +6,31 @@ import javax.mail.internet.InternetAddress;
 
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.common.mail.streams.SMTPMailMessageConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 
-@EnableBinding(SmtpGatewayMessageOutput.class)
+@Component
+@Slf4j
 public class SmtpGatewayMessageSource
 {	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SmtpGatewayMessageSource.class);	
+	// Maps to the Spring Cloud Stream functional output binding name.
+	protected static final String OUT_BINDING_NAME = "direct-smtp-gateway-message-out-0";
 	
 	@Autowired
-	@Qualifier(SmtpGatewayMessageOutput.SMTP_GATEWAY_MESSAGE_OUTPUT)
-	private MessageChannel smtpGatewayChannel;
+	private StreamBridge streamBridge;
 	
-	@Output(SmtpGatewayMessageOutput.SMTP_GATEWAY_MESSAGE_OUTPUT)
 	public <T> void forwardSMTPMessage(SMTPMailMessage msg) throws Exception
 	{
 		final String from = (msg.getMailFrom() == null) ? null : msg.getMailFrom().toString();
 		
-		LOGGER.info("Handing off incoming message to smtp gateway for from {} to {} with message id {}", from, 
+		log.info("Handing off incoming message to smtp gateway for from {} to {} with message id {}", from, 
 				toRecipsPrettingString(msg.getRecipientAddresses()), msg.getMimeMessage().getMessageID());
 		
-		this.smtpGatewayChannel.send(SMTPMailMessageConverter.toStreamMessage(msg));
+		streamBridge.send(OUT_BINDING_NAME, SMTPMailMessageConverter.toStreamMessage(msg));
 	}
 
 	protected String toRecipsPrettingString(List<InternetAddress> recips)
