@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nhind</groupId>
 	<artifactId>direct-smtp-mq-gateway</artifactId>
-	<version>8.0.0-SNAPSHOT</version>
+	<version>8.0.0</version>
 	<packaging>jar</packaging>
 	<name>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</name>
     <description>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</description>	
@@ -54,7 +54,7 @@
 	        <dependency>
 	            <groupId>io.pivotal.spring.cloud</groupId>
 	            <artifactId>spring-cloud-services-dependencies</artifactId>
-	            <version>3.2.1.RELEASE</version>
+	            <version>3.3.0</version>
 	            <type>pom</type>
 	            <scope>import</scope>
 	        </dependency>					
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>org.nhind</groupId>
 			<artifactId>direct-common</artifactId>
-			<version>8.0.0-SNAPSHOT</version>		
+			<version>8.0.0</version>		
 		</dependency>		
 		<dependency>
 			<groupId>org.subethamail</groupId>
