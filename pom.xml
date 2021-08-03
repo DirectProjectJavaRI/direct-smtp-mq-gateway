@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nhind</groupId>
 	<artifactId>direct-smtp-mq-gateway</artifactId>
-	<version>8.0.0</version>
+	<version>8.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</name>
     <description>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</description>	
@@ -199,21 +199,30 @@
 		            </jvmArguments>			    		        
 			    </configuration>					
 			</plugin>			
-		    <plugin>
-		      	<groupId>org.apache.maven.plugins</groupId> 
-		        <artifactId>maven-javadoc-plugin</artifactId>
-		        <configuration>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
 				    <additionalJOption>-Xdoclint:none</additionalJOption>
+				    <failOnError>false</failOnError>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
 					<docfilessubdirs>true</docfilessubdirs>
-					<detectJavaApiLink>true</detectJavaApiLink>
-					<detectLinks>true</detectLinks>
 					<source>1.8</source>
-					<show>public</show>  	                      	          
-		        </configuration>		        
-		    </plugin> 	
-			<!--  for releases only 		
+					<show>public</show>
+					<failOnError>false</failOnError>
+				</configuration>
+	            <executions>
+	              <execution>
+	                <phase>package</phase>
+	                <id>attach-javadocs</id>
+	                <goals>
+	                  <goal>jar</goal>
+	                </goals>
+	              </execution>
+	            </executions>					
+			</plugin>
+			<!--  for releases only 			
 	        <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-gpg-plugin</artifactId>
@@ -227,8 +236,8 @@
                  </execution>
                </executions>
                <version>3.0.1</version>
-            </plugin>
-            -->				
+            </plugin>	
+            -->		
 		</plugins>			
 	</build>
 	<reporting>
@@ -237,20 +246,19 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 			</plugin>  
-		    <plugin>
-		      	<groupId>org.apache.maven.plugins</groupId> 
-		        <artifactId>maven-javadoc-plugin</artifactId>
-		        <configuration>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
 				    <additionalJOption>-Xdoclint:none</additionalJOption>
+				    <failOnError>false</failOnError>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
 					<docfilessubdirs>true</docfilessubdirs>
-					<detectJavaApiLink>true</detectJavaApiLink>
-					<detectLinks>true</detectLinks>
 					<source>1.8</source>
-					<show>public</show>  	                      	          
-		        </configuration>		        
-		    </plugin> 
+					<show>public</show>
+				</configuration>
+			</plugin>	
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
