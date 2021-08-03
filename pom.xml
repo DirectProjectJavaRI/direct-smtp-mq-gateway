@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nhind</groupId>
 	<artifactId>direct-smtp-mq-gateway</artifactId>
-	<version>6.0</version>
+	<version>8.0.0</version>
 	<packaging>jar</packaging>
 	<name>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</name>
     <description>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</description>	
@@ -13,13 +13,14 @@
 		<connection>scm:git:https://github.com/DirectProject/nhin-d.git</connection>
 	</scm>
     <prerequisites>
-        <maven>3.0.0</maven>
+        <maven>3.5.0</maven>
     </prerequisites>  	
-	<parent>
+    <parent>
 	   <groupId>org.springframework.boot</groupId>
 	   <artifactId>spring-boot-starter-parent</artifactId>
-	   <version>2.1.9.RELEASE</version>
-	</parent>	
+	   <version>2.5.2</version>
+	   <relativePath />
+    </parent>	
     <developers>
         <developer>
             <name>Greg Meyer</name>
@@ -30,7 +31,6 @@
             </roles>                                                
         </developer>         
     </developers>
-
     <licenses>
        <license>
           <name>New BSD License</name>
@@ -39,27 +39,29 @@
     </licenses>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<subethasmtp.version>3.1.7</subethasmtp.version>
+		<commons-net.version>3.8.0</commons-net.version>
 	</properties>   
 	<dependencyManagement>
 		<dependencies>											
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.1.9.RELEASE</version> 
+				<version>2.5.2</version> 
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 	        <dependency>
 	            <groupId>io.pivotal.spring.cloud</groupId>
 	            <artifactId>spring-cloud-services-dependencies</artifactId>
-	            <version>2.1.4.RELEASE</version>
+	            <version>3.3.0</version>
 	            <type>pom</type>
 	            <scope>import</scope>
-	        </dependency>				
+	        </dependency>					
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-parent</artifactId>
-				 <version>Greenwich.SR3</version>
+				 <version>2020.0.3</version>
 				<type>pom</type>
 				<scope>import</scope>		
 			</dependency>											
@@ -105,21 +107,37 @@
 	    <dependency>
 	        <groupId>org.springframework.cloud</groupId>
 	        <artifactId>spring-cloud-starter-stream-rabbit</artifactId>        
-	    </dependency>	 				    			
+	    </dependency>		
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>		    			    			
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- Needed for unit testing function spring cloud streams -->
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-stream</artifactId>
+		    <type>test-jar</type>
+		    <scope>test</scope>
+		    <classifier>test-binder</classifier>
+		</dependency>		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>  		
 		<dependency>
 			<groupId>org.nhind</groupId>
 			<artifactId>direct-common</artifactId>
-			<version>6.0.1</version>		
+			<version>8.0.0</version>		
 		</dependency>		
 		<dependency>
 			<groupId>org.subethamail</groupId>
 			<artifactId>subethasmtp</artifactId>
-			<version>3.1.7</version>
+			<version>${subethasmtp.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>mail</artifactId>
@@ -130,13 +148,8 @@
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>3.6</version>
+			<version>${commons-net.version}</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-		  <groupId>org.springframework.cloud</groupId>
-		  <artifactId>spring-cloud-stream-test-support</artifactId>
-		  <scope>test</scope>
 		</dependency>	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -186,27 +199,21 @@
 		            </jvmArguments>			    		        
 			    </configuration>					
 			</plugin>			
-			<!--  for releases only 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
+		    <plugin>
+		      	<groupId>org.apache.maven.plugins</groupId> 
+		        <artifactId>maven-javadoc-plugin</artifactId>
+		        <configuration>
+				    <additionalJOption>-Xdoclint:none</additionalJOption>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
+					<docfilessubdirs>true</docfilessubdirs>
+					<detectJavaApiLink>true</detectJavaApiLink>
+					<detectLinks>true</detectLinks>
 					<source>1.8</source>
-					<show>public</show>
-				</configuration>
-	            <executions>
-	              <execution>
-	                <phase>package</phase>
-	                <id>attach-javadocs</id>
-	                <goals>
-	                  <goal>jar</goal>
-	                </goals>
-	              </execution>
-	            </executions>					
-			</plugin>			
+					<show>public</show>  	                      	          
+		        </configuration>		        
+		    </plugin> 	
+			<!--  for releases only 		
 	        <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-gpg-plugin</artifactId>
@@ -219,6 +226,7 @@
                     </goals>
                  </execution>
                </executions>
+               <version>3.0.1</version>
             </plugin>
             -->				
 		</plugins>			
@@ -228,22 +236,21 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
 			</plugin>  
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-				<configuration>
+		    <plugin>
+		      	<groupId>org.apache.maven.plugins</groupId> 
+		        <artifactId>maven-javadoc-plugin</artifactId>
+		        <configuration>
+				    <additionalJOption>-Xdoclint:none</additionalJOption>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
 					<docfilessubdirs>true</docfilessubdirs>
 					<detectJavaApiLink>true</detectJavaApiLink>
 					<detectLinks>true</detectLinks>
 					<source>1.8</source>
-					<show>protected</show>
-				</configuration>
-			</plugin>
+					<show>public</show>  	                      	          
+		        </configuration>		        
+		    </plugin> 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
@@ -258,11 +265,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>3.1.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>1.2</version>
 				<configuration>
 					<effort>Max</effort>
 				</configuration>

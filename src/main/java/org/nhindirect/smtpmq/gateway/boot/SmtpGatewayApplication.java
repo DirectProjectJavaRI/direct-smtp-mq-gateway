@@ -1,6 +1,5 @@
 package org.nhindirect.smtpmq.gateway.boot;
 
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
@@ -15,9 +14,6 @@ import org.subethamail.smtp.server.SMTPServer;
 @EnableScheduling
 public class SmtpGatewayApplication implements CommandLineRunner
 {
-	@Autowired
-	protected ConnectionFactory connectionFactory; 
-
 	@Autowired 
 	protected SMTPServer smtpServer;
 	

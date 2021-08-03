@@ -10,20 +10,19 @@ import javax.mail.internet.MimeMessage;
 
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @ConditionalOnProperty(name="direct.smtpmqgateway.loadgen.rate", matchIfMissing=false)
 @Component
+@Slf4j
 public class SimulatedLoadTask
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SimulatedLoadTask.class);	
-	
 	@Value("${direct.smtpmqgateway.loadgen.sender}")
 	protected String sender;
 	
@@ -44,7 +43,7 @@ public class SimulatedLoadTask
 		
 		SMTPMailMessage smptMsg = new SMTPMailMessage(msg, Arrays.asList(new InternetAddress(recipient)), new InternetAddress(sender));
 		
-		LOGGER.info("Sending generated load from " + sender + " to " + recipient);
+		log.info("Sending generated load from " + sender + " to " + recipient);
 		
 		msgSource.forwardSMTPMessage(smptMsg);
 	}
