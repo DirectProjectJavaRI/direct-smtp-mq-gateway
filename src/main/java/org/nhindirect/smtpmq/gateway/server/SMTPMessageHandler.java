@@ -151,7 +151,8 @@ public class SMTPMessageHandler implements MessageHandler
 		    	messageId = mimeMessage.getMessageID();
 		    	messageSource.forwardSMTPMessage(mailMessage);
 
-		        log.info("successfully sent message with message id {} ({} bytes)", messageId, countingInputStream.getByteCount());
+		    	log.info("successfully sent message with message id {} ({} bytes)", messageId, countingInputStream.getByteCount());
+		    	recipients.clear();
 		    } 
 		    catch (Throwable e) 
 		    {
