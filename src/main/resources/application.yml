@@ -7,6 +7,8 @@ info:
     version: '@project.version@'
  
 spring:
+  application:
+    name: direct-smtp-mq-gateway
   cloud:
     stream:
       # Need to define an explicit source binding name since we are using a StreamBridge

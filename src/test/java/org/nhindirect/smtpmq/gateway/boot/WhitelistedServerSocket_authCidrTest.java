@@ -2,7 +2,6 @@ package org.nhindirect.smtpmq.gateway.boot;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,13 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.subethamail.smtp.server.SMTPServer;
 
 
 @WebAppConfiguration 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {SmtpGatewayApplication.class}) 
 @Configuration
 @TestPropertySource("classpath:properties/testLocalAuthorizedCIDRConfig.properties")

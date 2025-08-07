@@ -1,4 +1,0 @@
-spring:
-  application:
-    name:
-     direct-smtp-mq-gateway

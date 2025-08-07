@@ -2,18 +2,16 @@ package org.nhindirect.smtpmq.gateway.streams;
 
 import java.util.List;
 
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.common.mail.streams.SMTPMailMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
 
-@Component
 @Slf4j
 public class SmtpGatewayMessageSource
 {	
