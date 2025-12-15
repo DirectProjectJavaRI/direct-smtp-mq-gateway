@@ -11,6 +11,7 @@ import org.nhindirect.smtpmq.gateway.server.SizeLimitedInputStreamFactory;
 import org.nhindirect.smtpmq.gateway.server.SizeLimitedStreamCreator;
 import org.nhindirect.smtpmq.gateway.server.WhitelistedServerSocket;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,6 +46,9 @@ public class SMTPServerBeanAutionConfiguration
 	@Value("${direct.smtpmqgateway.clientwhitelist.cidr:}")
 	private List<String> clientWhitelistCidrs;	
 	
+	@Autowired
+	private SmtpGatewayMessageSource messageSourceQueue;
+	
 	@ConditionalOnMissingBean
 	@Bean(destroyMethod = "stop")
     SMTPServer smtpServer(SMTPMessageHandler smtpMessageHandler) throws Exception
@@ -56,7 +60,7 @@ public class SMTPServerBeanAutionConfiguration
 			@Override
 			public MessageHandler create(MessageContext ctx) 
 			{
-				return smtpMessageHandler;		
+				return createSmtpMessageHandler();		
 			}
 	        
         });
@@ -88,9 +92,7 @@ public class SMTPServerBeanAutionConfiguration
 		
     }
 	
-	@ConditionalOnMissingBean
-	@Bean
-	SMTPMessageHandler smtpMessageHandler(SmtpGatewayMessageSource messageSourceQueue)
+	private SMTPMessageHandler createSmtpMessageHandler()
 	{	
 		final SizeLimitedStreamCreator sizeCreator = new SizeLimitedStreamCreator(maxMessageSize,
 				SizeLimitedInputStreamFactory.getInstance());	
@@ -104,4 +106,6 @@ public class SMTPServerBeanAutionConfiguration
 		
 		return new SmtpGatewayMessageSource();
 	}
+	
+	
 }
