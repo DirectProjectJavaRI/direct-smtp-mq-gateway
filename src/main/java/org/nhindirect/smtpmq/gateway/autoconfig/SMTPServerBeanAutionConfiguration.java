@@ -46,12 +46,9 @@ public class SMTPServerBeanAutionConfiguration
 	@Value("${direct.smtpmqgateway.clientwhitelist.cidr:}")
 	private List<String> clientWhitelistCidrs;	
 	
-	@Autowired
-	private SmtpGatewayMessageSource messageSourceQueue;
-	
 	@ConditionalOnMissingBean
 	@Bean(destroyMethod = "stop")
-    SMTPServer smtpServer(SMTPMessageHandler smtpMessageHandler) throws Exception
+    SMTPServer smtpServer(SmtpGatewayMessageSource messageSourceQueue) throws Exception
     {
 		
 		SMTPServer.Builder builder = new SMTPServer.Builder();
@@ -60,7 +57,7 @@ public class SMTPServerBeanAutionConfiguration
 			@Override
 			public MessageHandler create(MessageContext ctx) 
 			{
-				return createSmtpMessageHandler();		
+				return createSmtpMessageHandler(messageSourceQueue);		
 			}
 	        
         });
@@ -92,7 +89,7 @@ public class SMTPServerBeanAutionConfiguration
 		
     }
 	
-	private SMTPMessageHandler createSmtpMessageHandler()
+	private SMTPMessageHandler createSmtpMessageHandler(SmtpGatewayMessageSource messageSourceQueue)
 	{	
 		final SizeLimitedStreamCreator sizeCreator = new SizeLimitedStreamCreator(maxMessageSize,
 				SizeLimitedInputStreamFactory.getInstance());	
