@@ -7,11 +7,11 @@ import java.io.PushbackInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
@@ -93,7 +93,7 @@ public class SMTPMessageHandler implements MessageHandler
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void data(InputStream data) throws RejectException, TooMuchDataException, IOException
+	public String data(InputStream data) throws RejectException, TooMuchDataException, IOException
 	{
 		InputStream msgIn = new PushbackInputStream(data);//new PushbackInputStream(new CharTerminatedInputStream(data, SMTPTerminator));
 		
@@ -167,6 +167,8 @@ public class SMTPMessageHandler implements MessageHandler
 	    {
 	    	IOUtils.closeQuietly(headerStream);
 	    }
+	    
+	    return null;
 	}
 	
 	@Override
