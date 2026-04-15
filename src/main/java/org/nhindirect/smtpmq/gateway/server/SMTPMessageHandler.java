@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
+import org.nhindirect.stagent.cryptography.SMIMEStandard;
 import org.springframework.util.StringUtils;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
@@ -143,6 +144,15 @@ public class SMTPMessageHandler implements MessageHandler
 		    	  throw new RejectException(421, errorMessage);
 		      }
 		    }		
+		    
+
+		    // Because this service is the interface exposed to other HISPs, messages MUST be encrypted.  Otherwise reject it.
+		    if (!SMIMEStandard.isEncrypted(mimeMessage)) {
+
+		    	String errorMessage = "554 5.7.1 Message rejected due to content policy; message MUST be an encrypted message.";		    	
+		    	log.error(errorMessage);
+		    	throw new RejectException(554, errorMessage);
+		    }
 		    
 		    String messageId = "";
 		    try 

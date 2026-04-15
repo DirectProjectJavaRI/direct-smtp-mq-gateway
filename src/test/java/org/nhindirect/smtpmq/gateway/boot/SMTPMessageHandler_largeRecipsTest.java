@@ -45,7 +45,7 @@ public class SMTPMessageHandler_largeRecipsTest
 			
 	        final String sender = "sender@localhost";
 	        	
-	        final String body = "Subject: test\r\n\r\nTestmail";
+	        final String body = "Subject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail";
 	        final SMTPClient client = new SMTPClient();
 	        client.connect("localhost", 1025);
 	        client.helo("localhost");

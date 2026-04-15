@@ -41,7 +41,7 @@ public class SMTPMessageHandler_maxSizeTest
         final String sender = "sender@localhost";
 
         	
-        final StringBuilder builder = new StringBuilder("Message-ID: 12234\r\nSubject: test\r\n\r\nTestmail");
+        final StringBuilder builder = new StringBuilder("Message-ID: 12234\r\nSubject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail");
         for (int i = 0; i < 2000; ++i)
         	builder.append("A");
         
@@ -72,7 +72,7 @@ public class SMTPMessageHandler_maxSizeTest
         		data.append(", ");
         }
         	
-        data.append("\r\nSubject: test\r\n\r\nTestmail");        
+        data.append("\r\nSubject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail");        
         
         final SMTPClient client = new SMTPClient();
         client.connect("localhost", 1025);
