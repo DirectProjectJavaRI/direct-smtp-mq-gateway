@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nhind</groupId>
 	<artifactId>direct-smtp-mq-gateway</artifactId>
-	<version>9.0.0-SNAPSHOT</version>
+	<version>9.0.0</version>
 	<packaging>jar</packaging>
 	<name>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</name>
     <description>DirectProject Java RI Lightweight SMTP Server Gateway Standalone Spring Boot Micro-service Application</description>	
@@ -155,12 +155,12 @@
 		<dependency>
 			<groupId>org.nhind</groupId>
 			<artifactId>direct-common</artifactId>
-			<version>9.0.0-SNAPSHOT</version>		
-		</dependency>	
+			<version>9.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.nhind</groupId>
 			<artifactId>agent</artifactId>
-			<version>9.0.0-SNAPSHOT</version>		
+			<version>9.0.0</version>
 		</dependency>				
 		<dependency>
             <groupId>com.github.davidmoten</groupId>
@@ -244,7 +244,7 @@
 	              </execution>
 	            </executions>					
 			</plugin>
-			<!--  for releases only 			
+			<!--  for releases only
 	        <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-gpg-plugin</artifactId>
@@ -258,8 +258,8 @@
                  </execution>
                </executions>
                <version>3.0.1</version>
-            </plugin>	
-            -->		
+            </plugin>
+            -->
 	        <plugin>
 	          <groupId>org.sonatype.central</groupId>
 	          <artifactId>central-publishing-maven-plugin</artifactId>
