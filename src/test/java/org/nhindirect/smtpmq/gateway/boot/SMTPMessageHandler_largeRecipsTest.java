@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import org.apache.commons.net.smtp.SMTPClient;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +45,7 @@ public class SMTPMessageHandler_largeRecipsTest
 			
 	        final String sender = "sender@localhost";
 	        	
-	        final String body = "Subject: test\r\n\r\nTestmail";
+	        final String body = "Subject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail";
 	        final SMTPClient client = new SMTPClient();
 	        client.connect("localhost", 1025);
 	        client.helo("localhost");

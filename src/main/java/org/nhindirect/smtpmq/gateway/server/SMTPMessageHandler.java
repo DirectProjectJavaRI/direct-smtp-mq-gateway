@@ -7,16 +7,17 @@ import java.io.PushbackInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
+import org.nhindirect.stagent.cryptography.SMIMEStandard;
 import org.springframework.util.StringUtils;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
@@ -93,7 +94,7 @@ public class SMTPMessageHandler implements MessageHandler
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void data(InputStream data) throws RejectException, TooMuchDataException, IOException
+	public String data(InputStream data) throws RejectException, TooMuchDataException, IOException
 	{
 		InputStream msgIn = new PushbackInputStream(data);//new PushbackInputStream(new CharTerminatedInputStream(data, SMTPTerminator));
 		
@@ -144,6 +145,15 @@ public class SMTPMessageHandler implements MessageHandler
 		      }
 		    }		
 		    
+
+		    // Because this service is the interface exposed to other HISPs, messages MUST be encrypted.  Otherwise reject it.
+		    if (!SMIMEStandard.isEncrypted(mimeMessage)) {
+
+		    	String errorMessage = "554 5.7.1 Message rejected due to content policy; message MUST be an encrypted message.";		    	
+		    	log.error(errorMessage);
+		    	throw new RejectException(554, errorMessage);
+		    }
+		    
 		    String messageId = "";
 		    try 
 		    {
@@ -167,6 +177,8 @@ public class SMTPMessageHandler implements MessageHandler
 	    {
 	    	IOUtils.closeQuietly(headerStream);
 	    }
+	    
+	    return null;
 	}
 	
 	@Override

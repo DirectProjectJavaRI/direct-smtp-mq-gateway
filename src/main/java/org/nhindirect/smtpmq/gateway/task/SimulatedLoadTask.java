@@ -3,10 +3,10 @@ package org.nhindirect.smtpmq.gateway.task;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Message;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;

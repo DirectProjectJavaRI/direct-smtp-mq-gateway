@@ -9,13 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.smtp.SMTPClient;
 import org.nhindirect.common.mail.SMTPMailMessage;
 import org.nhindirect.common.mail.streams.SMTPMailMessageConverter;
@@ -35,7 +33,7 @@ public class SMTPMessageHandler_sendMessageTest
     protected static MimeMessage sentMessage;
     
 	@Test
-	public void testGoodMessage_assertMessageSent() throws Exception
+	public void testNonEncryptedMessage_assertMessageNotSent() throws Exception
 	{
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(
@@ -60,6 +58,39 @@ public class SMTPMessageHandler_sendMessageTest
 	        for (int i = 0; i < 4; ++i)
 	        	client.addRecipient("rcpt" + i + "@localhost.com");
 	        
+	        
+	        assertFalse(client.sendShortMessageData(data));
+	        client.quit();
+	        client.disconnect();	
+		};
+	}
+    
+	@Test
+	public void testGoodMessage_assertMessageSent() throws Exception
+	{
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration.getCompleteConfiguration(
+						SmtpGatewayApplication.class))
+				.run("")) 
+		{
+	        OutputDestination output = context.getBean(OutputDestination.class);
+			final SMTPServer smtpServer = context.getBean(SMTPServer.class);
+			if (!smtpServer.isRunning())
+			{	
+				smtpServer.start();
+			}
+			
+	        final String sender = "sender@localhost";
+
+        	
+	        final String data = "To: rcpt@localhost.com\r\nSubject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail";
+	        final SMTPClient client = new SMTPClient();
+	        client.connect("localhost", 1025);
+	        client.helo("localhost");
+	        client.setSender(sender);
+	        for (int i = 0; i < 4; ++i)
+	        	client.addRecipient("rcpt" + i + "@localhost.com");
+	        
 	        assertTrue(client.sendShortMessageData(data));
 	        client.quit();
 	        client.disconnect();
@@ -72,8 +103,6 @@ public class SMTPMessageHandler_sendMessageTest
 	        
 	        assertEquals("test", sentMessage.getSubject());
 	        assertEquals("rcpt@localhost.com", sentMessage.getHeader("To")[0]);
-	        final String content = IOUtils.toString(sentMessage.getInputStream(), Charset.defaultCharset());
-	        assertEquals("Testmail\r\n", content);
 	        
 	        final List<InternetAddress> recips = smtpMailMessage.getRecipientAddresses();
 	        
@@ -99,7 +128,7 @@ public class SMTPMessageHandler_sendMessageTest
 	        final String sender = "";
 
         	
-	        final String data = "To: rcpt@localhost.com\r\nSubject: test\r\n\r\nTestmail";
+	        final String data = "To: rcpt@localhost.com\r\nSubject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail";
 	        final SMTPClient client = new SMTPClient();
 	        client.connect("localhost", 1025);
 	        client.helo("localhost");
@@ -120,8 +149,7 @@ public class SMTPMessageHandler_sendMessageTest
 	        
 	        assertEquals("test", sentMessage.getSubject());
 	        assertEquals("rcpt@localhost.com", sentMessage.getHeader("To")[0]);
-	        final String content = IOUtils.toString(sentMessage.getInputStream(), Charset.defaultCharset());
-	        assertEquals("Testmail\r\n", content);
+
 	        
 	        final List<InternetAddress> recips = smtpMailMessage.getRecipientAddresses();
 	        
@@ -148,7 +176,7 @@ public class SMTPMessageHandler_sendMessageTest
 	        final String sender = "bl#@#$#.Localhost.com";
 
         	
-	        final String data = "To: rcpt@localhost.com\r\nSubject: test\r\n\r\nTestmail";
+	        final String data = "To: rcpt@localhost.com\r\nSubject: test\r\nContent-Transfer-Encoding: base64\r\nContent-Type: application/pkcs7-mime\r\n\r\nTestmail";
 	        final SMTPClient client = new SMTPClient();
 	        client.connect("localhost", 1025);
 	        client.helo("localhost");

@@ -1,8 +1,7 @@
-package org.nhindirect.smtpmq.gateway.springconfig;
+package org.nhindirect.smtpmq.gateway.autoconfig;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.List;
 
@@ -14,16 +13,18 @@ import org.nhindirect.smtpmq.gateway.server.WhitelistedServerSocket;
 import org.nhindirect.smtpmq.gateway.streams.SmtpGatewayMessageSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.MessageHandlerFactory;
 import org.subethamail.smtp.server.SMTPServer;
+import org.subethamail.smtp.server.ServerSocketCreator;
 
-@Configuration
-public class SMTPServerBeanConfig
+@AutoConfiguration
+public class SMTPServerBeanAutionConfiguration
 {	
 	
 	@Value("${direct.smtpmqgateway.binding.port:1025}")
@@ -45,65 +46,63 @@ public class SMTPServerBeanConfig
 	@Value("${direct.smtpmqgateway.clientwhitelist.cidr:}")
 	private List<String> clientWhitelistCidrs;	
 	
-	@Autowired
-	protected SmtpGatewayMessageSource messageSourceQueue;
-	
+	@ConditionalOnMissingBean
 	@Bean(destroyMethod = "stop")
-    public SMTPServer smtpServer() throws Exception
+    SMTPServer smtpServer(SmtpGatewayMessageSource messageSourceQueue) throws Exception
     {
-		final SMTPServer smtpServer = new SMTPServer(new MessageHandlerFactory() 
+		
+		SMTPServer.Builder builder = new SMTPServer.Builder();
+		builder.messageHandlerFactory(new MessageHandlerFactory() 
 	    {
 			@Override
 			public MessageHandler create(MessageContext ctx) 
 			{
-				return smtpMessageHandler();		
+				return createSmtpMessageHandler(messageSourceQueue);		
 			}
 	        
-        })
-		{
+        });
+		builder.port(port);
+		builder.bindAddress(InetAddress.getByName(host));
+		builder.softwareName("DirectProject Java RI SMTP To MQ Gateway");
+		builder.maxMessageSize(maxMessageSize);
+		
+		
+		builder.serverSocketFactory(new ServerSocketCreator() {
+			
 			@Override
-			protected ServerSocket createServerSocket() throws IOException
-			{
+			public ServerSocket createServerSocket() throws IOException {
+				
 				if (clientWhitelistCidrs.isEmpty() || 
 						(clientWhitelistCidrs.size() == 1 && !StringUtils.hasText(clientWhitelistCidrs.get(0))))
-					return super.createServerSocket();
-				
-				InetSocketAddress isa;
-	
-				if (this.getBindAddress() == null)
-				{
-					isa = new InetSocketAddress(this.getPort());
-				}
-				else
-				{
-					isa = new InetSocketAddress(this.getBindAddress(), this.getPort());
-				}
-	
-				final ServerSocket serverSocket = new WhitelistedServerSocket(clientWhitelistCidrs);
-				serverSocket.bind(isa, this.getBacklog());
-	
-				if (this.getPort() == 0)
-				{
-					this.setPort(serverSocket.getLocalPort());
-				}
-	
-				return serverSocket;
-			}				
-		};
+					return new ServerSocket();
+
+				return new WhitelistedServerSocket(clientWhitelistCidrs);				
+			}
+			
+		});
 		
-		smtpServer.setPort(port);
-		smtpServer.setBindAddress(InetAddress.getByName(host));
-		smtpServer.setSoftwareName("DirectProject Java RI SMTP To MQ Gateway");
-		smtpServer.setMaxMessageSize(maxMessageSize);
-		return smtpServer;
+	
+		
+		
+		return builder.build();
+		
+		
     }
 	
-	@Bean
-	public SMTPMessageHandler smtpMessageHandler()
+	private SMTPMessageHandler createSmtpMessageHandler(SmtpGatewayMessageSource messageSourceQueue)
 	{	
 		final SizeLimitedStreamCreator sizeCreator = new SizeLimitedStreamCreator(maxMessageSize,
 				SizeLimitedInputStreamFactory.getInstance());	
 		
 		return new SMTPMessageHandler(messageSourceQueue, new GetMessageHeaderStream(maxHeaderSize), sizeCreator);
-	}		
+	}	
+	
+	@ConditionalOnMissingBean
+	@Bean
+	SmtpGatewayMessageSource smtpGatewayMessageSource() {
+		
+		return new SmtpGatewayMessageSource();
+	}
+	
+	
 }

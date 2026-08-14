@@ -5,11 +5,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.subethamail.smtp.server.SMTPServer;
 
-@ComponentScan({"org.nhindirect.smtpmq.gateway"})
 @SpringBootApplication
 @EnableScheduling
 public class SmtpGatewayApplication implements CommandLineRunner
